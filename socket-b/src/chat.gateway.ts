@@ -1,7 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 
-@WebSocketGateway() // Определение класса в качестве шлюза WebSocket
+@WebSocketGateway(80,{
+    namespace: "chat", cors: true
+}) // Определение класса в качестве шлюза WebSocket
 export class ChatGateway {
   @WebSocketServer() // Декоратор для получения экземпляра сервера WebSocket
   server; // Поле для хранения сервера
