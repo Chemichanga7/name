@@ -1,1 +1,3 @@
 <button (click)="handleSubmitNewMessage()">Submit</button>
+<textarea [(ngModel)] = 'message'></textarea>
+<div *ngFor="let message of messages">{{message}}</div>
