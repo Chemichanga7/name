@@ -10,7 +10,7 @@ export class ChatGateway {
 
   @SubscribeMessage('message') // Декоратор для подписки на сообщения с определенным именем
   handleMessage(@MessageBody() message: string): void { // Обработчик для получения и обработки сообщений
-    this.server.emit('message', message); // Отправка сообщения всем подключенным клиентам
+    this.server.emit('message', { data: message, userId: 0 }) //this.server.emit('message', message); // Отправка сообщения всем подключенным клиентам
   }
 
   // всё что дальше тестовая версия происходящего
