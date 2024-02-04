@@ -11,4 +11,5 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 })
 export class EnterComponent {
   userId = 1;
+  roomId = 1;
 }

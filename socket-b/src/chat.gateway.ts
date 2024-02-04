@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { IRoomMessage } from "./types";
 
 @WebSocketGateway(80,{
   namespace: "chat", cors: true
@@ -18,23 +19,15 @@ export class ChatGateway {
   @SubscribeMessage('subscribe') // Декоратор для подписки на событие "подписаться"
   handleSubscribe(@MessageBody() room: string): void { // Обработчик для подписки на событие (поток)
     this.server.join(room); // Присоединение клиента к комнате (потоку)
-    this.server.emit('message', `User joined room: ${room}`); // Отправка сообщения о присоединении пользователя к комнате
   }
 
   @SubscribeMessage('unsubscribe') // Декоратор для подписки на событие "отписаться"
   handleUnsubscribe(@MessageBody() room: string): void { // Обработчик для отписки от события (потока)
     this.server.leave(room); // Отсоединение клиента от комнаты (потока)
-    this.server.emit('message', `User left room: ${room}`); // Отправка сообщения о отсоединении пользователя от комнаты
-  }
-
-  @SubscribeMessage('sendMessage') // Декоратор для подписки на событие "отправить сообщение"
-  handleSendMessage(@MessageBody() data: { room: string, message: string }): void { // Обработчик для отправки сообщения
-    const { room, message } = data;
-    this.server.to(room).emit('message', message); // Отправка сообщения всем клиентам в комнате (потоке)
   }
 
   @SubscribeMessage('deleteMessage') // Декоратор для подписки на событие "удалить сообщение"
-  handleDeleteMessage(@MessageBody() data: { room: string, messageId: string }): void { // Обработчик для удаления сообщения
+  handleDeleteMessage(@MessageBody() data: IRoomMessage): void { // Обработчик для удаления сообщения
     const { room, messageId } = data;
     // Логика удаления сообщения
     this.server.to(room).emit('messageDeleted', messageId); // Отправка события о удалении сообщения всем клиентам в комнате (потоке)

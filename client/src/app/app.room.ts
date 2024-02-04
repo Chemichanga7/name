@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import { io } from 'socket.io-client';
+import { IMessageListItem } from './types';
 
 @Component({
   selector: 'app-room',
@@ -14,15 +15,18 @@ import { io } from 'socket.io-client';
 export class RoomComponent {
   title = 'socket-client';
   message = '';
-  messages: { data: string, userId: number }[] = [];
+  messages: IMessageListItem[] = [];
   socket;
   userId: number;
+  roomId: number;
   constructor(private route: ActivatedRoute) {
-    this.userId = route.snapshot.params["userid"]
+    this.userId = route.snapshot.queryParams["userId"]
+    this.roomId = route.snapshot.queryParams["roomId"]
     this.socket = io("ws://localhost:80/chat");
+    this.socket.emit("subscribe", {userId: this.userId, roomId: this.roomId})
     this.socket.on('message', (message) => {
       console.log(message)
-      this.messages.push(message.data)
+      this.messages.push(message)
     })
   }
   handleSubmitNewMessage() {
