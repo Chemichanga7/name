@@ -3,4 +3,8 @@ export interface IRoomMessage {
     messageId: string;
   }
 
+export interface IWebSocketMessageData {
+  data: string, userId: number
+}
+
 export interface IMessageListItem { data: string, userId: number }

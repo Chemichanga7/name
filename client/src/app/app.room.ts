@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import { io } from 'socket.io-client';
-import { IMessageListItem } from './types';
+import { IMessageListItem, IWebSocketMessageData } from './types';
 
 @Component({
   selector: 'app-room',
@@ -30,7 +30,9 @@ export class RoomComponent {
     })
   }
   handleSubmitNewMessage() {
-    this.socket.emit('message', { data: this.message, userId: this.userId })
+    this.emit({ data: this.message, userId: this.userId })
   }
+  private emit(data: IWebSocketMessageData) {
+    this.socket.emit('message', data)
+ }
 }
-

@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { IRoomMessage } from "./types";
+import { Socket } from "socket.io";
 
 @WebSocketGateway(80,{
   namespace: "chat", cors: true
