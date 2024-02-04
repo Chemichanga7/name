@@ -9,7 +9,7 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { io } from 'socket.io-client';
-import { IMessageListItem, IWebSocketMessageData } from './types';
+import { IMessageListItem, IWebSocketMessageData } from '../Types/types';
 
 @Component({
   selector: 'app-room',
