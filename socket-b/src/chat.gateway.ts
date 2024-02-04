@@ -2,7 +2,7 @@
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 
 @WebSocketGateway(80,{
-    namespace: "chat", cors: true
+  namespace: "chat", cors: true
 }) // Определение класса в качестве шлюза WebSocket
 export class ChatGateway {
   @WebSocketServer() // Декоратор для получения экземпляра сервера WebSocket

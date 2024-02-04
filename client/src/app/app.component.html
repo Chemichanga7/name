@@ -1,3 +1,8 @@
-<button (click)="handleSubmitNewMessage()">Submit</button>
-<textarea [(ngModel)] = 'message'></textarea>
-<div *ngFor="let message of messages">{{message}}</div>
+<!--<button (click)="handleSubmitNewMessage()">Submit</button>-->
+<!--<textarea [(ngModel)] = 'message'></textarea>-->
+<!--<div *ngFor="let message of messages">{{message}}</div>-->
+
+<div class="container">
+  <button class="client_1" routerLink="/room" (click)="handleUserChange(1)">Enter as client 1</button>
+  <button class="client_2" (click)="handleUserChange(2)">Enter as client 2</button>
+</div>
