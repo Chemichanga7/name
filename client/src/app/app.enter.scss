@@ -1,0 +1,20 @@
+//@import 'normalize.css';
+
+.container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  
+    .client_1,
+    .client_2{
+      font-size: 20px;
+      height: 100px;
+      width: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }

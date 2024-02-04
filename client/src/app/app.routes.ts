@@ -1,13 +1,11 @@
 import {RouterModule, Routes} from '@angular/router';
 import { RoomComponent } from "./app.room";
 import { NgModule } from "@angular/core";
+import { EnterComponent } from './app.enter';
 
 export const routes: Routes = [
-  { path: 'room', component: RoomComponent }
+  { path: 'enter', component: EnterComponent },
+  { path: 'room/:userid', component: RoomComponent },
+  { path: '**', redirectTo: "enter" }
 ]
 
-@NgModule({
-    imports: [RouterModule.forRoot(routes, { useHash: true })],
-    exports: [RouterModule]
-})
-export class AppRoutingModule {}

@@ -11,13 +11,4 @@ import { NgFor } from "@angular/common";
   styleUrl: './app.hellowindow.scss'
 })
 export class HelloWindow {
-  userId: number;
-
-  constructor() {
-    this.userId = 0;
-  }
-  handleUserChange(userId: number){
-    this.userId = userId;
-    console.log('Yeah buddy', userId)
-  }
 }
