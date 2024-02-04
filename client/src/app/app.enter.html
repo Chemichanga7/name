@@ -1,4 +1,4 @@
 <div class="container">
-    <button class="client_1" [routerLink]="['/room']" [queryParams]="{userid: 1}" routerLinkActive="active-link">Enter as client 1</button>
-    <button class="client_2" [routerLink]="['/room']"  [queryParams]="{userid: 2}">Enter as client 2</button>
+    <input [(ngModel)]="userId">
+    <button class="client_1" [routerLink]="['/room']" [queryParams]="{userid: userId}" routerLinkActive="active-link">Enter as client {{userId}}</button>
 </div>
