@@ -7,19 +7,21 @@ import { Socket } from "socket.io";
   namespace: "chat", cors: true
 }) // Определение класса в качестве шлюза WebSocket
 export class ChatGateway {
+  currentMessageId = 1;
+  
   @WebSocketServer() // Декоратор для получения экземпляра сервера WebSocket
   server; // Поле для хранения сервера
 
   @SubscribeMessage('message') // Декоратор для подписки на сообщения с определенным именем
-  handleMessage(@MessageBody() message: string): void { // Обработчик для получения и обработки сообщений
-    this.server.emit('message', message); // Отправка сообщения всем подключенным клиентам
+  handleMessage(@MessageBody() message: {userId: any, data: string, roomId: string}): void { // Обработчик для получения и обработки сообщений
+    this.server.to(message.roomId).emit('message', {...message, id: this.currentMessageId++}); // Отправка сообщения всем подключенным клиентам
   }
 
   // всё что дальше тестовая версия происходящего
 
   @SubscribeMessage('subscribe') // Декоратор для подписки на событие "подписаться"
-  handleSubscribe(@MessageBody() room: string): void { // Обработчик для подписки на событие (поток)
-    this.server.join(room); // Присоединение клиента к комнате (потоку)
+  handleSubscribe(client: Socket, room: { userId: any, roomId: string }): void { // Обработчик для подписки на событие (поток)
+    client.join(room.roomId); // Присоединение клиента к комнате (потоку)
   }
 
   @SubscribeMessage('unsubscribe') // Декоратор для подписки на событие "отписаться"
@@ -35,9 +37,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('editMessage') // Декоратор для подписки на событие "редактировать сообщение"
-  handleEditMessage(@MessageBody() data: { room: string, messageId: string, newMessage: string }): void { // Обработчик для редактирования сообщения
-    const { room, messageId, newMessage } = data;
-    // Логика редактирования сообщения
-    this.server.to(room).emit('messageEdited', { messageId, newMessage }); // Отправка события о редактировании сообщения всем клиентам в комнате (потоке)
+  handleEditMessage(@MessageBody() message: {userId: any, data: string, roomId: string; id: number}): void { // Обработчик для редактирования сообщения
+    this.server.to(message.roomId).emit('message', message); // Отправка сообщения всем подключенным клиентам
   }
 }
