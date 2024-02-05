@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { IRoomMessage } from "./types";
+import { IEditMessageDto, IRoomMessage } from "./types";
 import { Socket } from "socket.io";
 
 @WebSocketGateway(80,{
@@ -37,7 +37,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('editMessage') // Декоратор для подписки на событие "редактировать сообщение"
-  handleEditMessage(@MessageBody() message: {userId: any, data: string, roomId: string; id: number}): void { // Обработчик для редактирования сообщения
+  handleEditMessage(@MessageBody() message: IEditMessageDto): void { // Обработчик для редактирования сообщения
     this.server.to(message.roomId).emit('message', message); // Отправка сообщения всем подключенным клиентам
   }
 }
