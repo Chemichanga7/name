@@ -1,7 +1,7 @@
 import {RouterModule, Routes} from '@angular/router';
-import { RoomComponent } from "./app.room";
+import { RoomComponent } from "../Room/app.room";
 import { NgModule } from "@angular/core";
-import { EnterComponent } from './app.enter';
+import { EnterComponent } from '../Enter/app.enter';
 
 export const routes: Routes = [
   { path: 'enter', component: EnterComponent },
