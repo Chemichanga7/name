@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { IRoomMessage } from "./types";
+import { IRoomMessage, IWebSocketSubscribeData } from "./types";
 import { Socket } from "socket.io";
 
 @WebSocketGateway(80,{
@@ -20,7 +20,7 @@ export class ChatGateway {
   // всё что дальше тестовая версия происходящего
 
   @SubscribeMessage('subscribe') // Декоратор для подписки на событие "подписаться"
-  handleSubscribe(client: Socket, room: { userId: any, roomId: string }): void { // Обработчик для подписки на событие (поток)
+  handleSubscribe(client: Socket, room: IWebSocketSubscribeData): void { // Обработчик для подписки на событие (поток)
     client.join(room.roomId); // Присоединение клиента к комнате (потоку)
   }
 
