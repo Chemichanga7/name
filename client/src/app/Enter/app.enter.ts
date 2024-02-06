@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-enter',

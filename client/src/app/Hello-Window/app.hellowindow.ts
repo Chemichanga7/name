@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {Router, RouterLink, RouterOutlet} from "@angular/router";
+import {RouterLink, RouterOutlet} from "@angular/router";
 import {FormsModule} from "@angular/forms";
 import { NgFor } from "@angular/common";
 
