@@ -6,10 +6,3 @@ export interface IRoomMessage {
 export interface IWebSocketMessageData {
 data: string, userId: number
 }
-
-export interface IEditMessage {
-  userId: any;
-  data: string;
-  roomId: string;
-  id: number;
-}
