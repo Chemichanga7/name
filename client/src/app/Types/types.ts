@@ -14,3 +14,8 @@ export interface IMessageListItem {
   data: string;
   userId: number;
 }
+
+export interface IWebSocketSubscribeData {
+  userId: any;
+  roomId: string;
+}

@@ -1,11 +1,14 @@
-<button (click)="handleSubmitNewMessage()">Submit</button>
-<textarea [(ngModel)]="message"></textarea>
-<div *ngFor="let message of messages" style="display: flex; gap: 5px">
-  <div>{{message.data}}</div>
-  <button (click)="openEditMessage(message)">edit</button>
+<div class="messages-wrapper">
+  <div class="messages-container" *ngFor="let message of messages" style="display: flex; gap: 5px">
+    <div class="message">{{message.data}}</div>
+    <button class="edit-message" (click)="openEditMessage(message)">edit</button>
+  </div>
+  <ng-container class="edit-container" *ngIf="currentEditMessage">
+    <input [(ngModel)]="currentEditMessage.data" />
+    <button (click)="updateMessage()">update</button>
+  </ng-container>
+  <textarea class="text-area" [(ngModel)]="message"></textarea>
+  <button class="submit-btn" (click)="handleSubmitNewMessage()">Submit</button>
 </div>
 
-<ng-container *ngIf="currentEditMessage">
-  <input [(ngModel)]="currentEditMessage.data" />
-  <button (click)="updateMessage()">update</button>
-</ng-container>
+
