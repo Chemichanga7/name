@@ -5,19 +5,17 @@ import { Socket } from "socket.io";
 
 @WebSocketGateway(80,{
   namespace: "chat", cors: true
-}) // Определение класса в качестве шлюза WebSocket
+}) 
 export class ChatGateway {
   currentMessageId = 1;
   
-  @WebSocketServer() // Декоратор для получения экземпляра сервера WebSocket
-  server; // Поле для хранения сервера
+  @WebSocketServer() 
+  server; 
 
-  @SubscribeMessage('message') // Декоратор для подписки на сообщения с определенным именем
-  handleMessage(@MessageBody() message: IEventDto): void { // Обработчик для получения и обработки сообщений
-    this.server.to(message.roomId).emit('message', {...message, id: this.currentMessageId++}); // Отправка сообщения всем подключенным клиентам
+  @SubscribeMessage('message') 
+  handleMessage(@MessageBody() message: IEventDto): void { 
+    this.server.to(message.roomId).emit('message', {...message, id: this.currentMessageId++});
   }
-
-  // всё что дальше тестовая версия происходящего
 
   @SubscribeMessage('subscribe') // Декоратор для подписки на событие "подписаться"
   handleSubscribe(client: Socket, room: IWebSocketSubscribeData): void { // Обработчик для подписки на событие (поток)
@@ -29,15 +27,20 @@ export class ChatGateway {
     this.server.leave(room); // Отсоединение клиента от комнаты (потока)
   }
 
-  @SubscribeMessage('deleteMessage') // Декоратор для подписки на событие "удалить сообщение"
-  handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void { // Обработчик для удаления сообщения
+  /*@SubscribeMessage('deleteMessage') 
+  handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void { 
     const { room, messageId } = data;
-    // Логика удаления сообщения
-    this.server.to(room).emit('messageDeleted', messageId); // Отправка события о удалении сообщения всем клиентам в комнате (потоке)
-  }
+    this.server.to(room).emit('messageDeleted', messageId); 
+  }*/
 
-  @SubscribeMessage('editMessage') // Декоратор для подписки на событие "редактировать сообщение"
-  handleEditMessage(@MessageBody() message: IEditMessageDto): void { // Обработчик для редактирования сообщения
-    this.server.to(message.roomId).emit('message', message); // Отправка сообщения всем подключенным клиентам
+  @SubscribeMessage('deleteMessage')
+handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
+  const { userId, data: messageData, roomId, id } = data;
+  this.server.to(roomId).emit('messageDeleted', id);
+}
+
+  @SubscribeMessage('editMessage') 
+  handleEditMessage(@MessageBody() message: IEditMessageDto): void { 
+    this.server.to(message.roomId).emit('message', message); 
   }
 }
