@@ -1,4 +1,4 @@
-export interface IRoomMessage {
+export interface IDeleteMessageDto {
   room: string;
   messageId: string;
 }
@@ -16,5 +16,11 @@ export interface IEditMessageDto {
 
 export interface IWebSocketSubscribeData {
   userId: any;
+  roomId: string;
+}
+
+export interface IEventDto {
+  userId: any;
+  data: string;
   roomId: string;
 }

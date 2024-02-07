@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { IRoomMessage, IWebSocketSubscribeData } from "./types";
+import { IDeleteMessageDto, IEditMessageDto, IEventDto, IWebSocketSubscribeData } from "./types";
 import { Socket } from "socket.io";
 
 @WebSocketGateway(80,{
@@ -13,7 +13,7 @@ export class ChatGateway {
   server; // Поле для хранения сервера
 
   @SubscribeMessage('message') // Декоратор для подписки на сообщения с определенным именем
-  handleMessage(@MessageBody() message: {userId: any, data: string, roomId: string}): void { // Обработчик для получения и обработки сообщений
+  handleMessage(@MessageBody() message: IEventDto): void { // Обработчик для получения и обработки сообщений
     this.server.to(message.roomId).emit('message', {...message, id: this.currentMessageId++}); // Отправка сообщения всем подключенным клиентам
   }
 
@@ -30,14 +30,14 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('deleteMessage') // Декоратор для подписки на событие "удалить сообщение"
-  handleDeleteMessage(@MessageBody() data: IRoomMessage): void { // Обработчик для удаления сообщения
+  handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void { // Обработчик для удаления сообщения
     const { room, messageId } = data;
     // Логика удаления сообщения
     this.server.to(room).emit('messageDeleted', messageId); // Отправка события о удалении сообщения всем клиентам в комнате (потоке)
   }
 
   @SubscribeMessage('editMessage') // Декоратор для подписки на событие "редактировать сообщение"
-  handleEditMessage(@MessageBody() message: {userId: any, data: string, roomId: string; id: number}): void { // Обработчик для редактирования сообщения
+  handleEditMessage(@MessageBody() message: IEditMessageDto): void { // Обработчик для редактирования сообщения
     this.server.to(message.roomId).emit('message', message); // Отправка сообщения всем подключенным клиентам
   }
 }
