@@ -59,6 +59,7 @@ export class RoomComponent {
 
   updateMessage() {
     this.emitEditMessage(this.currentEditMessage);
+    this.currentEditMessage = undefined;
   }
 
   private emit(data: IWebSocketMessageData) {

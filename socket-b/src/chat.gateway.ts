@@ -34,13 +34,13 @@ export class ChatGateway {
   }*/
 
   @SubscribeMessage('deleteMessage')
-handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
-  const { userId, data: messageData, roomId, id } = data;
-  this.server.to(roomId).emit('messageDeleted', id);
-}
+  handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
+    const { userId, data: messageData, roomId, id } = data;
+    this.server.to(roomId).emit('messageDeleted', id);
+  }
 
   @SubscribeMessage('editMessage') 
   handleEditMessage(@MessageBody() message: IEditMessageDto): void { 
-    this.server.to(message.roomId).emit('message', message); 
+    this.server.to(message.roomId).emit('editMessage', message);
   }
 }

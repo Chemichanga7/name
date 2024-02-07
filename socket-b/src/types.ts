@@ -1,10 +1,12 @@
 export interface IDeleteMessageDto {
-  room: string;
-  messageId: string;
+  userId: string;
+  data: string;
+  roomId: string;
+  id: number;
 }
 
 export interface IWebSocketMessageData {
-data: string, userId: number
+  data: string, userId: number
 }
 
 export interface IEditMessageDto {
