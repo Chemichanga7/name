@@ -1,13 +1,14 @@
 <div class="messages-wrapper">
-  <div class="messages-container" *ngFor="let message of messages" style="display: flex; gap: 5px">
-    <div class="message">{{message.data}}</div>
-    <button class="edit-message" (click)="openEditMessage(message)">edit</button>
+  <div class="messages-container">
+    <div class="message" *ngFor="let message of messages">{{message.data}}
+      <button class="edit-message" (click)="openEditMessage(message)">edit</button>
+    </div>
+    <ng-container class="edit-container" *ngIf="currentEditMessage">
+      <input class="update-input" [(ngModel)]="currentEditMessage.data" />
+      <button class="update-btn" (click)="updateMessage()">update</button>
+    </ng-container>
   </div>
-  <ng-container class="edit-container" *ngIf="currentEditMessage">
-    <input [(ngModel)]="currentEditMessage.data" />
-    <button (click)="updateMessage()">update</button>
-  </ng-container>
-  <textarea class="text-area" [(ngModel)]="message"></textarea>
+  <textarea class="text-area" [(ngModel)]="message" placeholder="Ожидает ввода сообщения"></textarea>
   <button class="submit-btn" (click)="handleSubmitNewMessage()">Submit</button>
 </div>
 
