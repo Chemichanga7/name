@@ -12,11 +12,6 @@ export class ChatGateway {
   @WebSocketServer() 
   server; 
 
-  @SubscribeMessage('message') 
-  handleMessage(@MessageBody() message: IEventDto): void { 
-    this.server.to(message.roomId).emit('message', {...message, id: this.currentMessageId++});
-  }
-
   @SubscribeMessage('subscribe') // Декоратор для подписки на событие "подписаться"
   handleSubscribe(client: Socket, room: IWebSocketSubscribeData): void { // Обработчик для подписки на событие (поток)
     client.join(room.roomId); // Присоединение клиента к комнате (потоку)
@@ -27,39 +22,16 @@ export class ChatGateway {
     this.server.leave(room); // Отсоединение клиента от комнаты (потока)
   }
 
-  /*@SubscribeMessage('deleteMessage') 
-  handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void { 
-    const { room, messageId } = data;
-    this.server.to(room).emit('messageDeleted', messageId); 
-  }*/
+  @SubscribeMessage('message') 
+  handleMessage(@MessageBody() message: IEventDto): void { 
+    this.server.to(message.roomId).emit('message', {...message, id: this.currentMessageId++});
+  }
 
-  // @SubscribeMessage('deleteMessage')
-  // handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
-  //   const { userId, data: messageData, roomId, id } = data;
-  //   this.server.to(roomId).emit('deleteMessage', id);
-  // }
-
-//   @SubscribeMessage('deleteMessage')
-// handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
-//   const { userId, data: messageData, roomId, id } = data;
-//   this.server.to(roomId).emit('deleteMessage', id);
-//   this.server.to(roomId).broadcast.emit('deleteMessage', id); // Broadcast the delete message event to all clients in the room
-// }
-
-@SubscribeMessage('deleteMessage')
-handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
-  const { userId, data: messageData, roomId, id } = data;
-  this.server.to(roomId).emit('deleteMessage', id);
-  this.server.to(roomId).clients((error, clients) => {
-    if (error) {
-      console.error('Error getting clients in the room:', error);
-    } else {
-      clients.forEach(client => {
-        this.server.sockets.connected[client].emit('deleteMessage', id);
-      });
-    }
-  });
-}
+  @SubscribeMessage('deleteMessage')
+  handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
+    const { userId, data: messageData, roomId, id } = data;
+    this.server.to(roomId).emit('deleteMessage', id);
+  }
 
   @SubscribeMessage('editMessage') 
   handleEditMessage(@MessageBody() message: IEditMessageDto): void { 
