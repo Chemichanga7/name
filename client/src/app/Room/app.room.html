@@ -1,11 +1,20 @@
 <div class="messages-wrapper">
   <div class="messages-container">
     <div class="message" *ngFor="let message of messages">{{message.data}}
-      <button class="edit-message" (click)="openEditMessage(message)">edit</button>
+      <ng-container *ngIf="message.userId === userId">
+        <div class="message-actions">
+          <button class="toggle-options" (click)="toggleOptions(message)">...</button>
+          <div class="options" *ngIf="message.showOptions">
+            <button class="edit-message" (click)="openEditMessage(message)">Редактировать</button>
+            <button class="delete-message" (click)="confirmDeleteMessage(message)">Удалить</button>
+          </div>
+        </div>
+      </ng-container>
     </div>
     <ng-container class="edit-container" *ngIf="currentEditMessage">
       <input class="update-input" [(ngModel)]="currentEditMessage.data" />
       <button class="update-btn" (click)="updateMessage()">update</button>
+      <button class="cancel-update" (click)="cancelUpdate()">Cancel update</button>
     </ng-container>
   </div>
   <textarea class="text-area" [(ngModel)]="message" placeholder="Ожидает ввода сообщения"></textarea>

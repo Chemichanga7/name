@@ -1,8 +1,3 @@
-export interface IRoomMessage {
-  room: string;
-  messageId: string;
-}
-
 export interface IWebSocketMessageData {
   id?: number;
   data: string;
@@ -13,9 +8,17 @@ export interface IWebSocketMessageData {
 export interface IMessageListItem {
   data: string;
   userId: number;
+  showOptions?: boolean;
 }
 
 export interface IWebSocketSubscribeData {
   userId: any;
   roomId: string;
+}
+
+export interface IDeleteMessageDto {
+  userId: string;
+  data: string;
+  roomId: string;
+  id: number;
 }

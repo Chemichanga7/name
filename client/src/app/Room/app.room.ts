@@ -8,7 +8,7 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { io } from 'socket.io-client';
-import { IMessageListItem, IWebSocketMessageData } from '../Types/types';
+import {IDeleteMessageDto, IMessageListItem, IWebSocketMessageData} from '../Types/types';
 
 @Component({
   selector: 'app-room',
@@ -51,6 +51,7 @@ export class RoomComponent {
       userId: this.userId,
       roomId: this.roomId,
     });
+    this.message = '';
   }
 
   openEditMessage(message: any) {
@@ -62,11 +63,44 @@ export class RoomComponent {
     this.currentEditMessage = undefined;
   }
 
+  cancelUpdate(){
+    this.currentEditMessage = undefined;
+  }
+
+  confirmDeleteMessage(message: any){
+    const confirmDelete = confirm('Вы точно хотите удалить сообщение?');
+    if(confirmDelete){
+      this.deleteMessage(message);
+    }
+  }
+
+  deleteMessage(message: any){
+    const index = this.messages.indexOf(message)
+    if(index !== -1){
+      const messageId = message.id;
+      this.messages.splice(index, 1);
+      this.emitDeleteMessage({
+        userId: message.userId,
+        data: message.data,
+        roomId: message.roomId,
+        id: messageId
+      });
+    }
+  }
+
+  toggleOptions(message: any) {
+    message.showOptions = !message.showOptions;
+  }
+
   private emit(data: IWebSocketMessageData) {
     this.socket.emit('message', data);
   }
 
   private emitEditMessage(data: IWebSocketMessageData) {
     this.socket.emit('editMessage', data);
+  }
+
+  private emitDeleteMessage(data: IDeleteMessageDto){
+    this.socket.emit('deleteMessage', data)
   }
 }
