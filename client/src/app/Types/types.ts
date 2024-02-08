@@ -1,5 +1,5 @@
 export interface IWebSocketMessageData {
-  id?: number;
+  id: number;
   data: string;
   userId: number;
   roomId: number;
@@ -9,6 +9,8 @@ export interface IMessageListItem {
   data: string;
   userId: number;
   showOptions?: boolean;
+  id: number;
+  roomId: number
 }
 
 export interface IWebSocketSubscribeData {

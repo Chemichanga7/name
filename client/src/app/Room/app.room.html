@@ -1,6 +1,7 @@
 <div class="messages-wrapper">
   <div class="messages-container">
-    <div class="message" *ngFor="let message of messages">{{message.data}}
+    <div class="message" *ngFor="let message of messages">
+      {{message.data}}
       <ng-container *ngIf="message.userId === userId">
         <div class="message-actions">
           <button class="toggle-options" (click)="toggleOptions(message)">...</button>
