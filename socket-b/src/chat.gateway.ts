@@ -20,6 +20,7 @@ export class ChatGateway {
   handleSubscribe(client: Socket, data: IWebSocketSubscribeData): void {
     // Обработчик для подписки на событие (поток)
     client.join(data.roomId); // Присоединение клиента к комнате (потоку)
+    this.countClientsInRoom(data.roomId)
   }
 
   @SubscribeMessage('unsubscribe') // Декоратор для подписки на событие "отписаться"
@@ -31,5 +32,16 @@ export class ChatGateway {
   @SubscribeMessage('events') // Подписываем метод на событие 'roomSubscription'
   handleRoomSubscription(@MessageBody() data: IWebSocketEventDto): void {
     this.server.to(data.roomId).emit('event', data); // Отправка сообщения с событием 'message' в комнату roomId
+  }
+
+  countClientsInRoom(roomId: string){
+    const clients = this.server.adapter.rooms.get(roomId);
+    console.log(clients)
+    if(clients){
+      const numClients = clients.size;
+      console.log(`Number of clients in room ${ roomId }: ${ numClients }`);
+    } else {
+      console.log(`Room ${ roomId } doesn't exist or has no clients.`);
+    }
   }
 }
