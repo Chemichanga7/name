@@ -58,39 +58,38 @@ export class ChatGateway {
     this.server.leave(room); // Отсоединение клиента от комнаты (потока)
   }
 
-  @SubscribeMessage('roomSubscription')
-  handleRoomSubscription(client: Socket, data: IWebSocketSubscribeData): void {
-    const { type, userId, data: messageData, roomId, id } = data;
-    
-    switch (type) {
-      case 'message':
-        this.handleMessage(client, data);
+  @SubscribeMessage('roomEvent') // Подписываем метод на событие 'roomSubscription'
+  handleRoomSubscription(client: Socket, data: IWebSocketSubscribeData): void { // Обработчик для события 'roomSubscription'
+    const { type, userId, data: messageData, roomId, id } = data; // Деструктуризация объекта data
+  
+    switch (type) { // Проверка значения свойства type
+      case 'message': // Если type равен 'message'
+        this.handleMessage(client, data); // Вызываем метод handleMessage
         break;
-      case 'deleteMessage':
-        this.handleDeleteMessage(client, data);
+      case 'deleteMessage': // Если type равен 'deleteMessage'
+        this.handleDeleteMessage(client, data); // Вызываем метод handleDeleteMessage
         break;
-      case 'editMessage':
-        this.handleEditMessage(client, data);
+      case 'editMessage': // Если type равен 'editMessage'
+        this.handleEditMessage(client, data); // Вызываем метод handleEditMessage
         break;
       default:
-        console.log('Неизвестный тип сообщения:', type);
+        console.log('Неизвестный тип сообщения:', type); // Выводим сообщение в консоль, если type не распознан
     }
   }
-
-  handleMessage(client: Socket, data: IWebSocketSubscribeData): void {
-    const { roomId } = data;
-    const messageId = this.currentMessageId++;
-    this.server.to(roomId).emit('message', { ...data, id: messageId });
+  
+  handleMessage(client: Socket, data: IWebSocketSubscribeData): void { // Обработчик для события 'message'
+    const { roomId } = data; // Деструктуризация объекта data и извлечение свойства roomId
+    const messageId = this.currentMessageId++; // Генерация messageId и инкремент currentMessageId
+    this.server.to(roomId).emit('message', { ...data, id: messageId }); // Отправка сообщения с событием 'message' в комнату roomId
   }
-
-  handleDeleteMessage(client: Socket, data: IWebSocketSubscribeData): void {
-    const { roomId, id } = data;
-    this.server.to(roomId).emit('deleteMessage', { id });
+  
+  handleDeleteMessage(client: Socket, data: IWebSocketSubscribeData): void { // Обработчик для события 'deleteMessage'
+    const { roomId, id } = data; // Деструктуризация объекта data и извлечение свойств roomId и id
+    this.server.to(roomId).emit('deleteMessage', { id }); // Отправка сообщения с событием 'deleteMessage' в комнату roomId
   }
-
-  handleEditMessage(client: Socket, data: IWebSocketSubscribeData): void {
-    const { roomId, data: messageData } = data;
-    this.server.to(roomId).emit('editMessage', messageData);
+  
+  handleEditMessage(client: Socket, data: IWebSocketSubscribeData): void { // Обработчик для события 'editMessage'
+    const { roomId, data: messageData } = data; // Деструктуризация объекта data и извлечение свойств roomId и data, присваиваем значение свойства data переменной messageData
+    this.server.to(roomId).emit('editMessage', messageData); // Отправка сообщения с событием 'editMessage' в комнату roomId
   }
 }
-
