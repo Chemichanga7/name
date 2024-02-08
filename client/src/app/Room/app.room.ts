@@ -33,6 +33,7 @@ export class RoomComponent {
   roomId: number;
 
   currentEditMessage?: any;
+  editedMessageText: string = '';
 
   constructor(private route: ActivatedRoute) {
     this.userId = route.snapshot.queryParams['userId'];
@@ -55,10 +56,13 @@ export class RoomComponent {
   }
 
   openEditMessage(message: any) {
+    message.showOptions = false;
     this.currentEditMessage = message;
+    this.editedMessageText = message.data;
   }
 
   updateMessage() {
+    this.currentEditMessage.data = this.editedMessageText;
     this.emitEditMessage(this.currentEditMessage);
     this.currentEditMessage = undefined;
   }

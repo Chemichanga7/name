@@ -12,7 +12,7 @@
       </ng-container>
     </div>
     <ng-container class="edit-container" *ngIf="currentEditMessage">
-      <input class="update-input" [(ngModel)]="currentEditMessage.data" />
+      <input class="update-input" [(ngModel)]="editedMessageText" />
       <button class="update-btn" (click)="updateMessage()">update</button>
       <button class="cancel-update" (click)="cancelUpdate()">Cancel update</button>
     </ng-container>
