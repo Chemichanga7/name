@@ -8,7 +8,7 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { io } from 'socket.io-client';
-import {IDeleteMessageDto, IMessageListItem, IWebSocketMessageData} from '../Types/types';
+import { IMessageListItem, IWebSocketEventDto } from '../Types/types';
 
 let id = Math.floor(1000000 * Math.random());
 
@@ -32,7 +32,7 @@ export class RoomComponent {
   messages: IMessageListItem[] = [];
   socket;
   userId: number;
-  roomId: number;
+  roomId: string;
 
   currentEditMessage?: IMessageListItem;
   editedMessageText: string = '';
@@ -42,20 +42,33 @@ export class RoomComponent {
     this.roomId = route.snapshot.queryParams['roomId'];
     this.socket = io('ws://localhost:80/chat');
     this.socket.emit('subscribe', { userId: this.userId, roomId: this.roomId });
-    this.socket.on('message', (message: IWebSocketMessageData) => {
-      console.log(message);
-      this.messages.push(message);
+    this.socket.on('event', (event: IWebSocketEventDto) => {
+      switch (event.type) {
+        case 'create':
+          this.messages.push(event.data.message);
+          break;
+        case 'remove':
+          this.deleteMessage(
+            this.messages.find(
+              (message) => message.id === event.data.message.id
+            )
+          );
+          break;
+      }
     });
-    this.socket.on('deleteMessage', (data: { id: number }) => {
-      this.deleteMessage(this.messages.find(item => item.id === data.id))
-    })
   }
 
   handleSubmitNewMessage() {
     this.emit({
-      id: id++,
-      data: this.message,
-      userId: this.userId,
+      type: 'create',
+      data: {
+        message: {
+          id: id++,
+          data: this.message,
+          userId: this.userId,
+          roomId: this.roomId,
+        },
+      },
       roomId: this.roomId,
     });
     this.message = '';
@@ -68,49 +81,47 @@ export class RoomComponent {
   }
 
   updateMessage() {
-    if(!this.currentEditMessage) return
+    if (!this.currentEditMessage) return;
     this.currentEditMessage.data = this.editedMessageText;
-    this.emitEditMessage(this.currentEditMessage);
+    this.emit({
+      type: 'update',
+      data: {
+        message: this.currentEditMessage,
+      },
+      roomId: this.currentEditMessage.roomId,
+    });
     this.currentEditMessage = undefined;
   }
 
-  cancelUpdate(){
+  cancelUpdate() {
     this.currentEditMessage = undefined;
   }
 
-  confirmDeleteMessage(message: any){
+  confirmDeleteMessage(message: IMessageListItem) {
     const confirmDelete = confirm('Вы точно хотите удалить сообщение?');
-    if(confirmDelete){
-      const index = this.messages.indexOf(message)
-      if(index !== -1){
-        const messageId = message.id;
-        this.emitDeleteMessage({
-          userId: message.userId,
-          data: message.data,
+    if (confirmDelete) {
+      const index = this.messages.indexOf(message);
+      if (index !== -1) {
+        this.emit({
+          type: 'remove',
+          data: {
+            message,
+          },
           roomId: message.roomId,
-          id: messageId
         });
       }
     }
   }
 
-  deleteMessage(message?: IMessageListItem){
-    this.messages = this.messages.filter(msg => msg !== message)
+  deleteMessage(message?: IMessageListItem) {
+    this.messages = this.messages.filter((msg) => msg !== message);
   }
 
   toggleOptions(message: any) {
     message.showOptions = !message.showOptions;
   }
 
-  private emit(data: IWebSocketMessageData) {
-    this.socket.emit('message', data);
-  }
-
-  private emitEditMessage(data: IWebSocketMessageData) {
-    this.socket.emit('editMessage', data);
-  }
-
-  private emitDeleteMessage(data: IDeleteMessageDto){
-    this.socket.emit('deleteMessage', data)
+  private emit(data: IWebSocketEventDto) {
+    this.socket.emit('events', data);
   }
 }

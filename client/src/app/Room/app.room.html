@@ -1,25 +1,42 @@
 <div class="messages-wrapper">
   <div class="messages-container">
-    <div class="message" *ngFor="let message of messages">
-      {{message.data}}
+    <div
+      *ngFor="let message of messages"
+      class="message"
+      [style.margin-left]="message.userId === userId ? 'auto' : null"
+    >
+      {{ message.userId }}: {{message.data}}
       <ng-container *ngIf="message.userId === userId">
         <div class="message-actions">
-          <button class="toggle-options" (click)="toggleOptions(message)">...</button>
-          <div class="options" *ngIf="message.showOptions">
-            <button class="edit-message" (click)="openEditMessage(message)">Редактировать</button>
-            <button class="delete-message" (click)="confirmDeleteMessage(message)">Удалить</button>
+          <button class="toggle-options" (click)="toggleOptions(message)">
+            ...
+          </button>
+          <div *ngIf="message.showOptions" class="options">
+            <button class="edit-message" (click)="openEditMessage(message)">
+              Редактировать
+            </button>
+            <button
+              class="delete-message"
+              (click)="confirmDeleteMessage(message)"
+            >
+              Удалить
+            </button>
           </div>
         </div>
       </ng-container>
     </div>
-    <ng-container class="edit-container" *ngIf="currentEditMessage">
+    <ng-container *ngIf="currentEditMessage" class="edit-container">
       <input class="update-input" [(ngModel)]="editedMessageText" />
       <button class="update-btn" (click)="updateMessage()">update</button>
-      <button class="cancel-update" (click)="cancelUpdate()">Cancel update</button>
+      <button class="cancel-update" (click)="cancelUpdate()">
+        Cancel update
+      </button>
     </ng-container>
   </div>
-  <textarea class="text-area" [(ngModel)]="message" placeholder="Ожидает ввода сообщения"></textarea>
+  <textarea
+    class="text-area"
+    [(ngModel)]="message"
+    placeholder="Ожидает ввода сообщения"
+  ></textarea>
   <button class="submit-btn" (click)="handleSubmitNewMessage()">Submit</button>
 </div>
-
-

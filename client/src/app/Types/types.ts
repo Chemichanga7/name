@@ -1,26 +1,16 @@
-export interface IWebSocketMessageData {
-  id: number;
-  data: string;
-  userId: number;
-  roomId: number;
-}
-
 export interface IMessageListItem {
   data: string;
   userId: number;
   showOptions?: boolean;
   id: number;
-  roomId: number
+  roomId: string;
 }
 
 export interface IWebSocketSubscribeData {
-  userId: any;
   roomId: string;
 }
-
-export interface IDeleteMessageDto {
-  userId: string;
-  data: string;
+export interface IWebSocketEventDto {
   roomId: string;
-  id: number;
+  type: 'create' | 'update' | 'remove';
+  data: any;
 }
