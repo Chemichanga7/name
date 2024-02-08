@@ -30,11 +30,11 @@ export class ChatGateway {
   @SubscribeMessage('deleteMessage')
   handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
     const { userId, data: messageData, roomId, id } = data;
-    this.server.to(roomId).emit('deleteMessage', id);
+    this.server.to(roomId).emit('deleteMessage', { id });
   }
 
   @SubscribeMessage('editMessage') 
-  handleEditMessage(@MessageBody() message: IEditMessageDto): void { 
+  handleEditMessage(@MessageBody() message: IEditMessageDto): void {
     this.server.to(message.roomId).emit('editMessage', message);
   }
 }

@@ -5,10 +5,6 @@ export interface IDeleteMessageDto {
   id: number;
 }
 
-export interface IWebSocketMessageData {
-  data: string, userId: number
-}
-
 export interface IEditMessageDto {
   userId: any;
   data: string;

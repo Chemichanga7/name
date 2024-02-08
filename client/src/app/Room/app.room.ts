@@ -10,6 +10,8 @@ import {
 import { io } from 'socket.io-client';
 import {IDeleteMessageDto, IMessageListItem, IWebSocketMessageData} from '../Types/types';
 
+let id = Math.floor(1000000 * Math.random());
+
 @Component({
   selector: 'app-room',
   standalone: true,
@@ -32,7 +34,7 @@ export class RoomComponent {
   userId: number;
   roomId: number;
 
-  currentEditMessage?: any;
+  currentEditMessage?: IMessageListItem;
   editedMessageText: string = '';
 
   constructor(private route: ActivatedRoute) {
@@ -44,10 +46,14 @@ export class RoomComponent {
       console.log(message);
       this.messages.push(message);
     });
+    this.socket.on('deleteMessage', (data: { id: number }) => {
+      this.deleteMessage(this.messages.find(item => item.id === data.id))
+    })
   }
 
   handleSubmitNewMessage() {
     this.emit({
+      id: id++,
       data: this.message,
       userId: this.userId,
       roomId: this.roomId,
@@ -55,13 +61,14 @@ export class RoomComponent {
     this.message = '';
   }
 
-  openEditMessage(message: any) {
+  openEditMessage(message: IMessageListItem) {
     message.showOptions = false;
     this.currentEditMessage = message;
     this.editedMessageText = message.data;
   }
 
   updateMessage() {
+    if(!this.currentEditMessage) return
     this.currentEditMessage.data = this.editedMessageText;
     this.emitEditMessage(this.currentEditMessage);
     this.currentEditMessage = undefined;
@@ -74,22 +81,21 @@ export class RoomComponent {
   confirmDeleteMessage(message: any){
     const confirmDelete = confirm('Вы точно хотите удалить сообщение?');
     if(confirmDelete){
-      this.deleteMessage(message);
+      const index = this.messages.indexOf(message)
+      if(index !== -1){
+        const messageId = message.id;
+        this.emitDeleteMessage({
+          userId: message.userId,
+          data: message.data,
+          roomId: message.roomId,
+          id: messageId
+        });
+      }
     }
   }
 
-  deleteMessage(message: any){
-    const index = this.messages.indexOf(message)
-    if(index !== -1){
-      const messageId = message.id;
-      this.messages.splice(index, 1);
-      this.emitDeleteMessage({
-        userId: message.userId,
-        data: message.data,
-        roomId: message.roomId,
-        id: messageId
-      });
-    }
+  deleteMessage(message?: IMessageListItem){
+    this.messages = this.messages.filter(msg => msg !== message)
   }
 
   toggleOptions(message: any) {

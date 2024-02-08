@@ -21,15 +21,19 @@
 
 .message {
   display: flex;
-  height: 20px;
+  min-height: 20px;
   max-height: fit-content;
   width: fit-content;
   max-width: 90%;
   border: 2px solid red;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  //word-wrap: break-word;
+  //overflow-wrap: break-word;
   justify-content: center;
   align-items: center;
+
+  .message-flex{
+    word-wrap: break-word;
+  }
 }
 
 .message-content {
