@@ -33,11 +33,33 @@ export class ChatGateway {
     this.server.to(room).emit('messageDeleted', messageId); 
   }*/
 
-  @SubscribeMessage('deleteMessage')
-  handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
-    const { userId, data: messageData, roomId, id } = data;
-    this.server.to(roomId).emit('messageDeleted', id);
-  }
+  // @SubscribeMessage('deleteMessage')
+  // handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
+  //   const { userId, data: messageData, roomId, id } = data;
+  //   this.server.to(roomId).emit('deleteMessage', id);
+  // }
+
+//   @SubscribeMessage('deleteMessage')
+// handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
+//   const { userId, data: messageData, roomId, id } = data;
+//   this.server.to(roomId).emit('deleteMessage', id);
+//   this.server.to(roomId).broadcast.emit('deleteMessage', id); // Broadcast the delete message event to all clients in the room
+// }
+
+@SubscribeMessage('deleteMessage')
+handleDeleteMessage(@MessageBody() data: IDeleteMessageDto): void {
+  const { userId, data: messageData, roomId, id } = data;
+  this.server.to(roomId).emit('deleteMessage', id);
+  this.server.to(roomId).clients((error, clients) => {
+    if (error) {
+      console.error('Error getting clients in the room:', error);
+    } else {
+      clients.forEach(client => {
+        this.server.sockets.connected[client].emit('deleteMessage', id);
+      });
+    }
+  });
+}
 
   @SubscribeMessage('editMessage') 
   handleEditMessage(@MessageBody() message: IEditMessageDto): void { 
