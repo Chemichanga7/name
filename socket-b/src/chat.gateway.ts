@@ -37,11 +37,7 @@ export class ChatGateway {
   countClientsInRoom(roomId: string){
     const clients = this.server.adapter.rooms.get(roomId);
     console.log(clients)
-    if(clients){
-      const numClients = clients.size;
-      console.log(`Number of clients in room ${ roomId }: ${ numClients }`);
-    } else {
-      console.log(`Room ${ roomId } doesn't exist or has no clients.`);
-    }
+    clients ? console.log(`Количество клиентов в комнате ${ roomId }: ${ clients.size }`) :
+              console.log(`Комната ${ roomId } не существует или пустая.`);
   }
 }
